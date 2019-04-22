@@ -49,7 +49,7 @@ namespace WebApiTest.Controllers
         public HttpResponseMessage GetRandomPic([FromUri] GetRandomPic_Request request)
         {
             try
-            {
+            { 
                 int width = 132;
                 int height = 35;
                 int fontsize = 20;
