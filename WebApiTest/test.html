@@ -1,0 +1,88 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+
+        function getpic() {
+            $.ajax({
+                url: "http://localhost:2744/api/user/GetRandomPic",
+                data: { w: 200, h: 50, fz: 30 },
+                method: "get",
+                dataType: "json",
+                success: function (data) {
+                    window.pickey = data.data.key;
+                    $("#imgrandompic").attr('src', 'data:image/jpeg;base64,' + data.data.imgbase64);
+                }
+
+            });
+        }
+
+        $(function () {
+            getpic();
+            //调用api站点的登录接口,接口在登录成功后返回一个token。
+            $("#login").on("click", function () {
+                $.ajax({
+                    url: "http://localhost:2744/api/user/login",
+                    data: $("#frmLogin").serialize(),
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        alert(JSON.stringify(data));
+                        window.token = data.data.token;
+                    }
+                });
+            });
+
+            $('#imgrandompic').on("click", function () {
+                getpic();
+
+            });
+
+
+            $('#btncheckpiccode').click(function () {
+                $.ajax({
+                    url: "http://localhost:2744/api/user/checkrandomcode",
+                    data: { key: window.pickey, code: $("#txtverifycode").val() },
+                    method: "post",
+                    success: function (data) {
+                        alert(JSON.stringify(data));
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+</head>
+<body>
+    <fieldset>
+        <legend>登录</legend>
+        <form id="frmLogin">
+            <br />
+            <label for="Password">账号:</label><input type="text" name="account" id="account" value="test" />
+            <label for="Password">密码:</label><input type="password" name="pwd" id="pwd" value="123456" />
+            <br /><br />
+        </form>
+        <button id="login">登录测试</button>
+    </fieldset>
+
+    <fieldset>
+        <legend>图片验证码</legend>
+        <form id="frmpicverify">
+            <br />
+            <img id="imgrandompic" />
+            <label for="txtverifycode">验证码:</label><input type="text" name="txtverifycode" id="txtverifycode" value="" />
+            <br />
+            <br />
+        </form>
+        <button id="btncheckpiccode">提交验证</button>
+    </fieldset>
+</body>
+</html>
